@@ -14,7 +14,7 @@
                                 <div class="clearfix"></div>
                             </div>
                             <div class="card-image-out">
-                                <swiper class="card-image" :indicator-dots="false" autoplay="true" interval="5000" duration="1000" :style="{height:image_height[index]+'px'}">
+                                <swiper class="card-image" id="swipers" :indicator-dots="false" autoplay="true" interval="5000" :current="current" duration="1000" @change="bindchange($event)" :style="{height:image_height[current]+'rpx'}">
                                     <block v-for="(item, index) in movies" :index="index" :key="key">
                                         <swiper-item>
                                             <image :src="item.url" class="slide-image" mode="widthFix" @load="image_load(index,$event)"/>
@@ -22,6 +22,8 @@
                                     </block>
                                 </swiper>
                             </div>
+                            <div class="card-t3">{{srf_data.srfmiaoshu}}</div>
+                            <div></div>
                         </div>
                     </div>
                 </div>
@@ -45,6 +47,7 @@
     </div>
 </template>
 <script>
+import store from '../store'
 export default {
     /*
         images:scaleToFill----不保持纵横比缩放图片，使图片的宽高完全拉伸至填满 image 元素
@@ -63,30 +66,42 @@ export default {
     */
     data(){
         return {
-            image_height: [],
+            current: 0,
+            image_height: [432],
             movies: [
                 {url: require('../assets/skin01.png')},
                 {url: require('../assets/skin02.png')}
             ],
             cishu: 1234,
             srf_data: {
-                srfname: '',
+                srfname: '萌芽熊吃果果',
                 srfauthor: '百度输入法',
                 srfcishu: 11477,
-                srfsize: '745.1K'
+                srfsize: '745.1K',
+                srfmiaoshu: '萌萌的我要发芽'
             }
         }
     },
     created(){
         
     },
+    computed: {
+        image_height(){
+            return store.state.image_height
+        }
+    },
     methods: {
         image_load(i,e){
-            console.log(i,e.target)
-            let viewheight = 750/(e.target.width/e.target.height);
+            let that = this;
+            let viewheight = e.target.width/e.target.height;
+            viewheight = 540/viewheight;
             this.image_height[i] = viewheight;
-            this.srfname = '萌芽熊吃果果';
-            console.log(this.image_height);
+            let images_height = this.image_height;
+            store.commit('decrement',images_height);
+        },
+        bindchange(e){
+            let oIndex = e.mp.detail.current;
+            this.current = oIndex;
         }
     }
 }
@@ -141,6 +156,12 @@ export default {
 .card-t2 span{
     color:#cccccc;
 }
+.card-t3{
+    font-size:24px;
+    line-height: 40px;
+    color:#474747;
+    padding-top:20px;
+}
 .card-p1{
     width: 50%;
     float: left;
@@ -154,7 +175,7 @@ export default {
     margin: 0 auto;
     position: relative;
     overflow: hidden;
-    border-radius: 10px;
+    border-radius: 20px;
 }
 .card-image image{
     width: 100%
@@ -162,7 +183,9 @@ export default {
 .swiper{
     width: 100%;
 }
-
+.slide-image{
+    /* border-radius: 20px; */
+}
 .clearfix:after {
     visibility: hidden;
     display: block;
