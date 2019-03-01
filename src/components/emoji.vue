@@ -6,13 +6,22 @@
                 <div class="panel">
                     <div class="card">
                         <div class="card-inner">
-                            <div class="card-t1">{{srf_data.srfname}}</div>
-                            <div class="card-t2"><span>作者：</span>{{srf_data.srfauthor}}</div>
-                            <div>
-                                <div class="card-p1"><div class="card-t2"><span>下载：</span>{{srf_data.srfcishu}}次</div></div>
-                                <div class="card-p1"><div class="card-t2"><span>大小：</span>{{srf_data.srfsize}}</div></div>
+                            <div class="card-header">
+                                <div class="card-header-left">
+                                    <img src="../assets/skin01.png" mode="aspectFit" @load="title_img_load($event)" :style="{width:title_img_width+'rpx'}"/>
+                                </div>
+                                <div class="card-header-right">
+                                    <div class="card-t1">{{srf_data.srfname}}</div>
+                                    <div class="card-t2"><span>作者：</span>{{srf_data.srfauthor}}</div>
+                                    <div>
+                                        <div class="card-p1"><div class="card-t2"><span>下载：</span>{{srf_data.srfcishu}}次</div></div>
+                                        <div class="card-p1"><div class="card-t2"><span>大小：</span>{{srf_data.srfsize}}</div></div>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                </div>
                                 <div class="clearfix"></div>
                             </div>
+                            <div class="card-t3">{{srf_data.srfmiaoshu}}</div>
                             <div class="card-image-out">
                                 <swiper class="card-image" id="swipers" :indicator-dots="false" autoplay="true" interval="5000" :current="current" duration="1000" @change="bindchange($event)" :style="{height:image_height[current]+'rpx'}">
                                     <block v-for="(item, index) in movies" :index="index" :key="key">
@@ -25,7 +34,6 @@
                                     <span v-for="(item,index) in movies" :class="{ active: index == current }"></span>
                                 </div>
                             </div>
-                            <div class="card-t3">{{srf_data.srfmiaoshu}}</div>
                             <div @click="gotoguanwang">
                                 <button class="skin-btn" open-type="launchApp" app-parameter="wechat" @error="launchAppError">
                                     <img src="../assets/downskin.png" mode="widthFix" alt="">
@@ -85,6 +93,9 @@ export default {
     computed: {
         image_height(){
             return store.state.image_height
+        },
+        title_img_width(){
+            return store.state.title_img_width
         }
     },
     methods: {
@@ -95,6 +106,12 @@ export default {
             this.image_height[i] = viewheight;
             let images_height = this.image_height;
             store.commit('decrement',images_height);
+        },
+        title_img_load(e){
+            console.log(e);
+            let that = this;
+            let titltwidth = e.target.width/e.target.height*150;
+            store.commit('increment',titltwidth);
         },
         launchAppError(e){
             console.log(e.mp.detail.errMsg)
@@ -148,6 +165,17 @@ export default {
     padding:40px 0;
     margin: 0 auto;
 }
+.card-header-left{
+	float:left;
+}
+.card-header-left img{
+	height:150px;
+    width: auto;
+}
+.card-header-right{
+	float:left;
+    margin-left:10px;
+}
 .card-t1{
     font-size:38px;
     line-height: 60px;
@@ -166,10 +194,11 @@ export default {
     font-size:24px;
     line-height: 40px;
     color:#474747;
-    padding-top:20px;
+    /* padding-top:20px; */
 }
 .card-p1{
-    width: 50%;
+    /* width: 50%; */
+    margin-right: 10px;
     float: left;
 }
 .card-image-out{

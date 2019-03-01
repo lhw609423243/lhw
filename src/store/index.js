@@ -8,14 +8,14 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
-    srfname: '',
+    title_img_width: '',
     image_height: []
   },
   mutations: {
-    increment: (state,height) => {
-      // console.log(state,height);
+    increment: (state,width) => {
+      // console.log(state,width);
       const obj = state
-      obj.srfname = height
+      obj.title_img_width = width
     },
     decrement: (state,height) => {
       const obj = state
